@@ -1,0 +1,29 @@
+name: Create 365 Commits
+
+on:
+  workflow_dispatch: # 手动触发工作流
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.name "zuozuyouli"
+        git config --global user.email "zuozuyouli@gmail.com"
+
+    - name: Create 365 empty commits
+      run: |
+        start_date="2020-01-01"
+        for i in $(seq 0 1800); do
+          current_date=$(date -d "$start_date + $i days" +"%Y-%m-%dT12:00:00")
+          GIT_COMMITTER_DATE="$current_date" git commit --allow-empty -m "Empty commit $current_date" --date "$current_date"
+        done
+
+    - name: Push changes
+      run: |
+        git push origin main
